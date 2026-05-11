@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AuroraTravel — Agencia de Viajes Nórdicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #050d14;
+    --deep: #091622;
+    --mid: #0e2236;
+    --aurora1: #00c9a7;
+    --aurora2: #4aeabc;
+    --aurora3: #7b68ee;
+    --aurora4: #00a8e8;
+    --gold: #c9a84c;
+    --cream: #f0ece0;
+    --text: #cdd8e0;
+    --muted: #7a9aaf;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--night);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── AURORA CANVAS ── */
+  #aurora-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.45;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    background: linear-gradient(to bottom, rgba(5,13,20,0.9) 0%, transparent 100%);
+    transition: background 0.4s;
+  }
+
+  nav.scrolled {
+    background: rgba(5,13,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,201,167,0.1);
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--cream);
+  }
+
+  .logo span { color: var(--aurora1); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--aurora1); }
+
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--aurora1);
+    color: var(--aurora1);
+    padding: 0.55rem 1.6rem;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .nav-cta:hover {
+    background: var(--aurora1);
+    color: var(--night);
+  }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
+  }
+
+  .hero-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--aurora1);
+    margin-bottom: 1.8rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--aurora2);
+  }
+
+  .hero-sub {
+    margin-top: 1.8rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+
+  .hero-actions {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .btn-primary {
+    background: var(--aurora1);
+    color: var(--night);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-primary:hover {
+    background: var(--aurora2);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(240,236,224,0.3);
+    padding: 0.9rem 2.5rem;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--cream);
+    transform: translateY(-2px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards;
+  }
+
+  .scroll-hint span {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 45px;
+    background: linear-gradient(to bottom, var(--aurora1), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-top: 1px solid rgba(0,201,167,0.15);
+    border-bottom: 1px solid rgba(0,201,167,0.15);
+    background: rgba(9,22,34,0.7);
+    backdrop-filter: blur(8px);
+  }
+
+  .stat-item {
+    flex: 1;
+    max-width: 220px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-right: 1px solid rgba(0,201,167,0.12);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: var(--aurora1);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 7rem 4rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--aurora1);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--aurora2); }
+
+  .section-body {
+    font-size: 0.92rem;
+    line-height: 1.9;
+    color: var(--muted);
+    max-width: 600px;
+  }
+
+  /* ── DESTINATIONS ── */
+  #destinos {
+    max-width: 100%;
+    padding: 7rem 4rem;
+  }
+
+  #destinos .inner { max-width: 1300px; margin: 0 auto; }
+
+  .dest-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    margin-top: 3.5rem;
+    background: rgba(0,201,167,0.08);
+  }
+
+  .dest-card {
+    background: var(--deep);
+    padding: 2.5rem 1.8rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s;
+    border-bottom: 2px solid transparent;
+  }
+
+  .dest-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--aurora1);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+  }
+
+  .dest-card:hover { background: var(--mid); }
+  .dest-card:hover::before { transform: scaleX(1); }
+
+  .dest-flag {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .dest-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .dest-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .dest-tag {
+    margin-top: 1.2rem;
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--aurora1);
+    border: 1px solid rgba(0,201,167,0.35);
+    padding: 0.25rem 0.7rem;
+  }
+
+  /* ── VIAJE ESTRELLA ── */
+  #viaje {
+    background: rgba(9,22,34,0.5);
+    max-width: 100%;
+    padding: 7rem 4rem;
+    border-top: 1px solid rgba(0,201,167,0.1);
+    border-bottom: 1px solid rgba(0,201,167,0.1);
+  }
+
+  #viaje .inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .viaje-badge {
+    display: inline-block;
+    background: var(--aurora1);
+    color: var(--night);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.9rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+
+  .route-steps {
+    margin-top: 2.5rem;
+    position: relative;
+  }
+
+  .route-steps::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--aurora1), var(--aurora3), transparent);
+  }
+
+  .route-step {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.8rem;
+    align-items: flex-start;
+  }
+
+  .step-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--aurora1);
+    background: var(--night);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--aurora1);
+    font-weight: 500;
+  }
+
+  .step-content h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 0.25rem;
+  }
+
+  .step-content p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .viaje-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(0,201,167,0.1);
+    margin-top: 2.5rem;
+  }
+
+  .detail-box {
+    background: var(--deep);
+    padding: 1.4rem;
+  }
+
+  .detail-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .detail-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--cream);
+  }
+
+  .price-highlight {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    border: 1px solid rgba(0,201,167,0.25);
+    background: rgba(0,201,167,0.04);
+  }
+
+  .price-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--aurora1);
+    line-height: 1;
+    margin: 0.3rem 0;
+  }
+
+  .price-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ── EXPERIENCIAS ── */
+  .exp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .exp-card {
+    padding: 2rem;
+    border: 1px solid rgba(0,201,167,0.12);
+    background: rgba(9,22,34,0.6);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .exp-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,201,167,0.06), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .exp-card:hover {
+    border-color: rgba(0,201,167,0.35);
+    transform: translateY(-4px);
+  }
+
+  .exp-card:hover::after { opacity: 1; }
+
+  .exp-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .exp-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    color: var(--cream);
+    margin-bottom: 0.7rem;
+  }
+
+  .exp-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  /* ── VALORES ── */
+  #valores {
+    max-width: 100%;
+    padding: 7rem 4rem;
+    background: var(--deep);
+    border-top: 1px solid rgba(0,201,167,0.1);
+  }
+
+  #valores .inner {
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .valores-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3.5rem;
+  }
+
+  .valor-item {
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(0,201,167,0.3);
+  }
+
+  .valor-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: rgba(0,201,167,0.2);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .valor-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .valor-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── CONGRESO ── */
+  .congreso-wrap {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .congreso-visual {
+    background: var(--mid);
+    border: 1px solid rgba(0,201,167,0.15);
+    padding: 3rem;
+    position: relative;
+  }
+
+  .congreso-visual::before {
+    content: 'ZARAGOZA';
+    position: absolute;
+    top: -0.7rem;
+    left: 2rem;
+    background: var(--deep);
+    padding: 0 0.8rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--aurora1);
+  }
+
+  .venue-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .venue-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.82rem;
+    color: var(--text);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0,201,167,0.08);
+  }
+
+  .venue-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .venue-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0,201,167,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .congreso-price {
+    display: inline-block;
+    margin-top: 2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    color: var(--aurora1);
+  }
+
+  .congreso-price small {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  /* ── CONTACTO ── */
+  #contacto {
+    max-width: 100%;
+    padding: 7rem 4rem;
+    text-align: center;
+    border-top: 1px solid rgba(0,201,167,0.1);
+  }
+
+  #contacto .inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .contact-form {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-input {
+    background: var(--deep);
+    border: 1px solid rgba(0,201,167,0.15);
+    color: var(--text);
+    padding: 1rem 1.2rem;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.82rem;
+    width: 100%;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+
+  .form-input::placeholder { color: var(--muted); }
+
+  .form-input:focus {
+    border-color: var(--aurora1);
+  }
+
+  select.form-input {
+    cursor: pointer;
+    appearance: none;
+  }
+
+  textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    background: var(--night);
+    border-top: 1px solid rgba(0,201,167,0.1);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer-links a {
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--aurora1); }
+
+  .travelup-badge {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .travelup-badge span { color: var(--aurora1); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.15); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: var(--aurora1);
+    margin: 1.5rem 0;
+  }
+
+  /* ── REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── HAMBURGER ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+    z-index: 200;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--cream);
+    transition: all 0.3s;
+  }
+
+  .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* ── MOBILE MENU ── */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5,13,20,0.98);
+    z-index: 150;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--cream);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+  }
+
+  .mobile-menu a:hover { color: var(--aurora1); }
+
+  /* ── TABLET (≤1024px) ── */
+  @media (max-width: 1024px) {
+    nav { padding: 1.2rem 2rem; }
+
+    .nav-links { gap: 1.5rem; }
+
+    #destinos, #viaje, #zaragoza, #valores, #contacto {
+      padding: 5rem 2.5rem;
+    }
+
+    section { padding: 5rem 2.5rem; }
+
+    .dest-grid { grid-template-columns: repeat(3, 1fr); }
+
+    #viaje .inner { gap: 3rem; }
+
+    .congreso-wrap { gap: 3rem; }
+
+    .valores-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .exp-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── MOBILE (≤768px) ── */
+  @media (max-width: 768px) {
+    /* Nav mobile */
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .hamburger { display: flex; }
+
+    /* Hero */
+    #hero { padding: 0 1.5rem; }
+    .hero-title { font-size: clamp(2.8rem, 14vw, 4.5rem); }
+    .hero-sub { font-size: 0.82rem; max-width: 100%; }
+    .hero-actions { flex-direction: column; align-items: center; gap: 0.8rem; width: 100%; }
+    .btn-primary, .btn-ghost { width: 100%; max-width: 320px; text-align: center; }
+
+    /* Stats bar */
+    .stats-bar { flex-wrap: wrap; justify-content: center; }
+    .stat-item {
+      flex: 0 0 50%;
+      max-width: 50%;
+      border-right: none;
+      border-bottom: 1px solid rgba(0,201,167,0.12);
+      padding: 1.2rem 1rem;
+    }
+    .stat-item:last-child { flex: 0 0 100%; max-width: 100%; border-bottom: none; }
+
+    /* Sections padding */
+    #destinos, #viaje, #zaragoza, #valores, #contacto {
+      padding: 4rem 1.5rem;
+    }
+    section { padding: 4rem 1.5rem; }
+
+    /* Destinos grid */
+    .dest-grid { grid-template-columns: 1fr 1fr; }
+
+    /* Viaje */
+    #viaje .inner { grid-template-columns: 1fr; gap: 2.5rem; }
+
+    /* Experiencias */
+    .exp-grid { grid-template-columns: 1fr; }
+
+    /* Valores */
+    .valores-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    /* Congreso */
+    .congreso-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+    .congreso-visual { padding: 2rem 1.5rem; }
+
+    /* Contacto */
+    .form-row { grid-template-columns: 1fr; }
+
+    /* Footer */
+    footer {
+      flex-direction: column;
+      gap: 1.2rem;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .footer-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+
+    /* Price */
+    .price-amount { font-size: 2.2rem; }
+  }
+
+  /* ── SMALL MOBILE (≤480px) ── */
+  @media (max-width: 480px) {
+    .dest-grid { grid-template-columns: 1fr; }
+    .valores-grid { grid-template-columns: 1fr; }
+    .viaje-details { grid-template-columns: 1fr; }
+    .hero-title { font-size: clamp(2.4rem, 13vw, 3.5rem); }
+    .section-title { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Aurora Canvas -->
+<canvas id="aurora-bg"></canvas>
+
+<!-- Nav -->
+<nav id="main-nav">
+  <div class="logo">Aurora<span>Travel</span></div>
+  <ul class="nav-links">
+    <li><a href="#destinos">Destinos</a></li>
+    <li><a href="#viaje">Nuestro Viaje</a></li>
+    <li><a href="#experiencias">Experiencias</a></li>
+    <li><a href="#zaragoza">Eventos</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <button class="nav-cta" onclick="scrollToContact()">Reservar</button>
+  <button class="hamburger" id="hamburger" aria-label="Menú" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Menú móvil -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#destinos" onclick="closeMenu()">Destinos</a>
+  <a href="#viaje" onclick="closeMenu()">Nuestro Viaje</a>
+  <a href="#experiencias" onclick="closeMenu()">Experiencias</a>
+  <a href="#zaragoza" onclick="closeMenu()">Eventos</a>
+  <a href="#contacto" onclick="closeMenu()">Contacto</a>
+  <button class="btn-primary" onclick="closeMenu(); scrollToContact()">Reservar</button>
+</div>
+
+<!-- Hero -->
+<div id="hero">
+  <p class="hero-label">Zaragoza · Agencia de Viajes Nórdicos</p>
+  <h1 class="hero-title">
+    Aurora<br><em>Travel</em>
+  </h1>
+  <p class="hero-sub">Experiencias auténticas entre auroras boreales, fiordos milenarios y culturas que el tiempo no ha olvidado.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="scrollToViaje()">Descubrir la Ruta</button>
+    <button class="btn-ghost" onclick="scrollToContact()">Hablar con un experto</button>
+  </div>
+  <div class="scroll-hint">
+    <span>Explorar</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num">5</span>
+    <span class="stat-label">Países Nórdicos</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">12</span>
+    <span class="stat-label">Días de Aventura</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">Personalizado</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">ASG</span>
+    <span class="stat-label">Turismo Sostenible</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">TravelUp</span>
+    <span class="stat-label">Red Nacional</span>
+  </div>
+</div>
+
+<!-- Destinos -->
+<div id="destinos">
+  <div class="inner reveal">
+    <p class="section-tag">Nuestros Destinos</p>
+    <h2 class="section-title">El norte de Europa<br><em>te llama</em></h2>
+    <p class="section-body">Especializados en los cinco países que guardan los secretos más hermosos del continente. Cada destino, una historia diferente.</p>
+    <div class="dest-grid">
+      <div class="dest-card">
+        <div class="dest-flag">🇳🇴</div>
+        <div class="dest-name">Noruega</div>
+        <p class="dest-desc">Fiordos, auroras boreales en Tromsø y la majestuosidad de los paisajes árticos.</p>
+        <span class="dest-tag">Fiordos · Ártico</span>
+      </div>
+      <div class="dest-card">
+        <div class="dest-flag">🇸🇪</div>
+        <div class="dest-name">Suecia</div>
+        <p class="dest-desc">Estocolmo y el archipiélago. El museo Skansen y el Palacio de Drottningholm.</p>
+        <span class="dest-tag">Cultura · Diseño</span>
+      </div>
+      <div class="dest-card">
+        <div class="dest-flag">🇫🇮</div>
+        <div class="dest-name">Finlandia</div>
+        <p class="dest-desc">Rovaniemi en el Círculo Polar, el Santa Claus Village y la Laponia finlandesa.</p>
+        <span class="dest-tag">Laponia · Ártico</span>
+      </div>
+      <div class="dest-card">
+        <div class="dest-flag">🇩🇰</div>
+        <div class="dest-name">Dinamarca</div>
+        <p class="dest-desc">Copenhague, el Castillo de Rosenborg y el icónico barrio alternativo de Christiania.</p>
+        <span class="dest-tag">Histórico · Moderno</span>
+      </div>
+      <div class="dest-card">
+        <div class="dest-flag">🇮🇸</div>
+        <div class="dest-name">Islandia</div>
+        <p class="dest-desc">La isla de hielo y fuego. Géiseres, volcanes y las auroras más espectaculares del mundo.</p>
+        <span class="dest-tag">Naturaleza · Volcanes</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Viaje Estrella -->
+<div id="viaje">
+  <div class="inner">
+    <div>
+      <div class="reveal">
+        <span class="viaje-badge">Producto Estrella</span>
+        <p class="section-tag">12 días · 4 países · Grupos reducidos</p>
+        <h2 class="section-title">Ruta Escandinava:<br><em>"Leyendas del Norte"</em></h2>
+        <p class="section-body">Un circuito inmersivo diseñado para descubrir la esencia del norte de Europa. Capitales escandinavas, cultura Sami, auroras boreales y el Santa Claus Village.</p>
+        <div class="divider"></div>
+      </div>
+      <div class="route-steps reveal">
+        <div class="route-step">
+          <div class="step-dot">1</div>
+          <div class="step-content">
+            <h4>Copenhague, Dinamarca</h4>
+            <p>Castillo de Rosenborg, canales históricos, Christiania y el Palacio de Amalienborg.</p>
+          </div>
+        </div>
+        <div class="route-step">
+          <div class="step-dot">2</div>
+          <div class="step-content">
+            <h4>Estocolmo, Suecia</h4>
+            <p>Gamla Stan, archipiélago, Skansen y el Palacio de Drottningholm.</p>
+          </div>
+        </div>
+        <div class="route-step">
+          <div class="step-dot">3</div>
+          <div class="step-content">
+            <h4>Oslo, Noruega</h4>
+            <p>Ópera de Oslo, Museo Munch, Fortaleza de Akershus y el Parque Vigeland.</p>
+          </div>
+        </div>
+        <div class="route-step">
+          <div class="step-dot">4</div>
+          <div class="step-content">
+            <h4>Tromsø — Puerta del Ártico</h4>
+            <p>Cultura Sami, safari de ballenas, Catedral Ártica y auroras boreales.</p>
+          </div>
+        </div>
+        <div class="route-step">
+          <div class="step-dot">5</div>
+          <div class="step-content">
+            <h4>Rovaniemi, Laponia finlandesa</h4>
+            <p>Círculo Polar Ártico y el legendario Santa Claus Village.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="viaje-details">
+        <div class="detail-box">
+          <div class="detail-label">Duración</div>
+          <div class="detail-value">12 días / 11 noches</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-label">Régimen</div>
+          <div class="detail-value">Pensión Completa</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-label">Alojamiento</div>
+          <div class="detail-value">Hoteles 3★ y 4★</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-label">Transporte</div>
+          <div class="detail-value">Vuelos + AVE + Ferry</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-label">Guía</div>
+          <div class="detail-value">Hispanohablante</div>
+        </div>
+        <div class="detail-box">
+          <div class="detail-label">Grupo</div>
+          <div class="detail-value">Reducido</div>
+        </div>
+      </div>
+
+      <div class="price-highlight">
+        <div class="price-label">Precio por persona desde</div>
+        <div class="price-amount">3.976 €</div>
+        <div class="price-note">Incluye vuelos, alojamiento, pensión completa, excursiones, seguro de viaje y asistencia integral. Menores de 18 años: 3.426 €.</div>
+        <br>
+        <button class="btn-primary" onclick="scrollToContact()" style="margin-top:0.5rem">Solicitar información</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Experiencias -->
+<section id="experiencias">
+  <div class="reveal">
+    <p class="section-tag">Lo que vivirás</p>
+    <h2 class="section-title">Experiencias que<br><em>no se olvidan</em></h2>
+  </div>
+  <div class="exp-grid reveal">
+    <div class="exp-card">
+      <div class="exp-icon">🌌</div>
+      <div class="exp-title">Auroras Boreales</div>
+      <p class="exp-desc">Observa el cielo ártico iluminarse con colores imposibles. Tromsø, uno de los mejores lugares del mundo para este fenómeno único.</p>
+    </div>
+    <div class="exp-card">
+      <div class="exp-icon">🦌</div>
+      <div class="exp-title">Cultura Sami</div>
+      <p class="exp-desc">Conoce de primera mano el modo de vida del pueblo indígena del norte de Europa. Participa en actividades con renos y tradiciones ancestrales.</p>
+    </div>
+    <div class="exp-card">
+      <div class="exp-icon">🐋</div>
+      <div class="exp-title">Safari de Ballenas</div>
+      <p class="exp-desc">Navega por los fiordos noruegos en busca de cetáceos en libertad. Una experiencia que solo es posible en los mares del norte.</p>
+    </div>
+    <div class="exp-card">
+      <div class="exp-icon">🎅</div>
+      <div class="exp-title">Santa Claus Village</div>
+      <p class="exp-desc">Visita el hogar oficial de Papá Noel en Rovaniemi, situado en el Círculo Polar Ártico. Un espacio mágico para todas las edades.</p>
+    </div>
+    <div class="exp-card">
+      <div class="exp-icon">🏔️</div>
+      <div class="exp-title">Fiordos Noruegos</div>
+      <p class="exp-desc">Paisajes de una belleza casi irreal, esculpidos durante milenios por glaciares. Vista panorámica desde el teleférico Fjellheisen.</p>
+    </div>
+    <div class="exp-card">
+      <div class="exp-icon">🍽️</div>
+      <div class="exp-title">Gastronomía Nórdica</div>
+      <p class="exp-desc">Pensión completa incluida. Descubre la cocina escandinava, desde el smørrebrød danés hasta los sabores árticos de Laponia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Zaragoza Congreso -->
+<div id="zaragoza" style="max-width:100%; padding:7rem 4rem; background:rgba(9,22,34,0.5); border-top:1px solid rgba(0,201,167,0.1);">
+  <div style="max-width:1300px; margin:0 auto;">
+    <div class="reveal">
+      <p class="section-tag">TravelUp · Evento MICE</p>
+      <h2 class="section-title">Zaragoza:<br><em>Capas de Historia</em></h2>
+      <p class="section-body" style="margin-bottom:3rem;">Un congreso cultural y profesional que transforma la ciudad en una experiencia inmersiva. Patrimonio, networking, gastronomía aragonesa y conocimiento en un solo destino.</p>
+    </div>
+    <div class="congreso-wrap reveal">
+      <div class="congreso-visual">
+        <ul class="venue-list">
+          <li>
+            <div class="venue-icon">🏛️</div>
+            <div>
+              <strong style="display:block; margin-bottom:0.2rem; color:var(--cream);">Palacio de la Aljafería</strong>
+              <span style="font-size:0.72rem; color:var(--muted);">Joya del arte islámico en la Península</span>
+            </div>
+          </li>
+          <li>
+            <div class="venue-icon">🏢</div>
+            <div>
+              <strong style="display:block; margin-bottom:0.2rem; color:var(--cream);">Palacio de Congresos</strong>
+              <span style="font-size:0.72rem; color:var(--muted);">Sede principal del congreso</span>
+            </div>
+          </li>
+          <li>
+            <div class="venue-icon">🎨</div>
+            <div>
+              <strong style="display:block; margin-bottom:0.2rem; color:var(--cream);">Patio de la Infanta</strong>
+              <span style="font-size:0.72rem; color:var(--muted);">Renacentista · Centro histórico</span>
+            </div>
+          </li>
+          <li>
+            <div class="venue-icon">⛪</div>
+            <div>
+              <strong style="display:block; margin-bottom:0.2rem; color:var(--cream);">Basílica del Pilar · Plaza del Pilar</strong>
+              <span style="font-size:0.72rem; color:var(--muted);">Visita cultural y patrimonial</span>
+            </div>
+          </li>
+          <li>
+            <div class="venue-icon">🍷</div>
+            <div>
+              <strong style="display:block; margin-bottom:0.2rem; color:var(--cream);">Gastronomía Aragonesa</strong>
+              <span style="font-size:0.72rem; color:var(--muted);">Aura Restaurante · Casa Lac · Los Cabezudos</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p style="font-size:0.82rem; color:var(--muted); line-height:1.9; margin-bottom:1.5rem;">
+          3 jornadas completas. Ponencias académicas, mesas redondas, talleres participativos, visitas guiadas patrimoniales y actividades de networking profesional.
+        </p>
+        <p style="font-size:0.82rem; color:var(--muted); line-height:1.9; margin-bottom:1.5rem;">
+          Zaragoza como destino MICE: conectada con Madrid y Barcelona por alta velocidad, compacta, accesible y con un patrimonio histórico excepcional.
+        </p>
+        <div style="display:flex; gap:2rem; margin-bottom:2rem; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem;">Duración</div>
+            <div style="font-family:'Cormorant Garamond', serif; font-size:1.1rem; color:var(--cream);">3 Jornadas</div>
+          </div>
+          <div>
+            <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem;">Organiza</div>
+            <div style="font-family:'Cormorant Garamond', serif; font-size:1.1rem; color:var(--cream);">Red TravelUp</div>
+          </div>
+          <div>
+            <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem;">Temática</div>
+            <div style="font-family:'Cormorant Garamond', serif; font-size:1.1rem; color:var(--cream);">Patrimonio & MICE</div>
+          </div>
+        </div>
+        <div class="price-highlight" style="margin-top:0;">
+          <div class="price-label">Inscripción por asistente</div>
+          <div class="price-amount" style="font-size:2.4rem;">400 €</div>
+          <div class="price-note">Incluye alojamiento, ponencias, visitas culturales guiadas, coffee breaks, documentación y networking. Comidas en restaurantes colaboradores no incluidas.</div>
+          <br>
+          <button class="btn-primary" onclick="scrollToContact()" style="margin-top:0.5rem">Inscribirse al Congreso</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Valores -->
+<div id="valores">
+  <div class="inner">
+    <div class="reveal">
+      <p class="section-tag">Nuestra Filosofía</p>
+      <h2 class="section-title">Por qué elegir<br><em>AuroraTravel</em></h2>
+    </div>
+    <div class="valores-grid reveal">
+      <div class="valor-item">
+        <span class="valor-num">01</span>
+        <div class="valor-title">Especialización Nórdica</div>
+        <p class="valor-desc">Conocimiento profundo de los destinos, recursos y culturas escandinavas para aportar mayor valor al viajero.</p>
+      </div>
+      <div class="valor-item">
+        <span class="valor-num">02</span>
+        <div class="valor-title">Atención Personalizada</div>
+        <p class="valor-desc">Trato cercano, asesoramiento individualizado y propuestas adaptadas al perfil de cada viajero.</p>
+      </div>
+      <div class="valor-item">
+        <span class="valor-num">03</span>
+        <div class="valor-title">Turismo Sostenible</div>
+        <p class="valor-desc">Criterios ASG, comprometidos con los ODS de la Agenda 2030 y con el respeto al medio ambiente ártico.</p>
+      </div>
+      <div class="valor-item">
+        <span class="valor-num">04</span>
+        <div class="valor-title">Experiencias Auténticas</div>
+        <p class="valor-desc">Grupos reducidos, cultura Sami, vida local. El antídoto perfecto contra el turismo masificado.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contacto -->
+<div id="contacto">
+  <div class="inner reveal">
+    <p class="section-tag">Hablemos</p>
+    <h2 class="section-title">Tu próxima aventura<br><em>empieza aquí</em></h2>
+    <p class="section-body" style="margin:0 auto 0.5rem; text-align:center;">Cuéntanos qué estás buscando. Nuestros especialistas diseñarán la experiencia perfecta para ti.</p>
+    <div class="divider" style="margin:1.5rem auto;"></div>
+    <div class="contact-form">
+      <div class="form-row">
+        <input class="form-input" type="text" placeholder="Nombre completo">
+        <input class="form-input" type="email" placeholder="Correo electrónico">
+      </div>
+      <div class="form-row">
+        <input class="form-input" type="tel" placeholder="Teléfono">
+        <select class="form-input">
+          <option value="" disabled selected>¿Qué te interesa?</option>
+          <option>Ruta Escandinava: Leyendas del Norte</option>
+          <option>Viaje personalizado a Noruega</option>
+          <option>Viaje personalizado a Islandia</option>
+          <option>Viaje personalizado a Finlandia</option>
+          <option>Congreso "Zaragoza: Capas de Historia"</option>
+          <option>Otro destino nórdico</option>
+        </select>
+      </div>
+      <textarea class="form-input" placeholder="Cuéntanos más sobre tu viaje ideal: fechas, número de viajeros, preferencias..."></textarea>
+      <button class="btn-primary" style="align-self:center; padding:1rem 3.5rem; font-size:0.75rem;">Enviar consulta</button>
+    </div>
+    <p style="margin-top:2rem; font-size:0.72rem; color:var(--muted);">📍 Zaragoza, Aragón &nbsp;·&nbsp; ✉️ info@auroratravel.es &nbsp;·&nbsp; 📞 +34 976 000 000</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-copy">© 2026 AuroraTravel · Todos los derechos reservados</div>
+  <div class="footer-links">
+    <a href="#">Aviso Legal</a>
+    <a href="#">Privacidad</a>
+    <a href="#">Condiciones</a>
+    <a href="#">Reclamaciones</a>
+  </div>
+  <div class="travelup-badge">Miembro de la red <span>TravelUp</span></div>
+</footer>
+
+<script>
+// ── AURORA CANVAS ──
+const canvas = document.getElementById('aurora-bg');
+const ctx = canvas.getContext('2d');
+let W, H, t = 0;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function drawAurora() {
+  ctx.clearRect(0, 0, W, H);
+  t += 0.003;
+
+  const bands = [
+    { y: H * 0.25, color1: 'rgba(0,201,167,', color2: 'rgba(74,234,188,', speed: 1 },
+    { y: H * 0.38, color1: 'rgba(123,104,238,', color2: 'rgba(0,168,232,', speed: 1.4 },
+    { y: H * 0.18, color1: 'rgba(0,168,232,', color2: 'rgba(0,201,167,', speed: 0.7 },
+  ];
+
+  bands.forEach((band, i) => {
+    const waveH = 60 + Math.sin(t * band.speed + i) * 30;
+    const yOff = Math.sin(t * 0.5 + i * 1.3) * 40;
+
+    const grad = ctx.createLinearGradient(0, band.y + yOff - waveH, 0, band.y + yOff + waveH * 2);
+    grad.addColorStop(0, band.color1 + '0)');
+    grad.addColorStop(0.3, band.color1 + '0.18)');
+    grad.addColorStop(0.5, band.color2 + '0.28)');
+    grad.addColorStop(0.7, band.color1 + '0.12)');
+    grad.addColorStop(1, band.color1 + '0)');
+
+    ctx.beginPath();
+    ctx.moveTo(0, band.y + yOff + Math.sin(t * band.speed) * 20);
+
+    for (let x = 0; x <= W; x += 8) {
+      const y = band.y + yOff
+        + Math.sin(x * 0.004 + t * band.speed) * waveH * 0.4
+        + Math.sin(x * 0.008 + t * band.speed * 1.3) * waveH * 0.2
+        + Math.cos(x * 0.002 + t * 0.8) * waveH * 0.3;
+      if (x === 0) ctx.moveTo(x, y - waveH);
+      ctx.lineTo(x, y);
+    }
+    for (let x = W; x >= 0; x -= 8) {
+      const y = band.y + yOff
+        + Math.sin(x * 0.004 + t * band.speed) * waveH * 0.4
+        + Math.sin(x * 0.008 + t * band.speed * 1.3) * waveH * 0.2
+        + Math.cos(x * 0.002 + t * 0.8) * waveH * 0.3;
+      ctx.lineTo(x, y + waveH * 0.5);
+    }
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+  });
+
+  // Stars
+  if (t < 0.1 || Math.random() < 0.005) {
+    for (let s = 0; s < 80; s++) {
+      const sx = Math.random() * W;
+      const sy = Math.random() * H * 0.6;
+      const sr = Math.random() * 1.2;
+      const sa = 0.3 + Math.random() * 0.5;
+      ctx.beginPath();
+      ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${sa})`;
+      ctx.fill();
+    }
+  }
+
+  requestAnimationFrame(drawAurora);
+}
+drawAurora();
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── REVEAL ON SCROLL ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(r => observer.observe(r));
+
+// ── HELPERS ──
+function scrollToViaje() {
+  document.getElementById('viaje').scrollIntoView({ behavior: 'smooth' });
+}
+function scrollToContact() {
+  document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+}
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+}
+function closeMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+</body>
+</html>
